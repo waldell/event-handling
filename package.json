@@ -1,0 +1,22 @@
+{
+  "name": "event-handling",
+  "version": "1.0.0",
+  "description": "event manager",
+  "main": "events.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waldell/event-handling.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/waldell/event-handling/issues"
+  },
+  "homepage": "https://github.com/waldell/event-handling#readme",
+  "dependencies": {
+    "object-validation": "git+https://github.com/waldell/object-validation.git"
+  }
+}
