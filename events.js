@@ -1,6 +1,6 @@
 import Element from './element';
 import ElementEvent from './element-event';
-import ObjectValidation from 'object-validation';
+import ObjectValidation from 'object-validation/dist/object-validation';
 
 /**
  * Main object containing elements and their events
@@ -32,7 +32,6 @@ export default class Events {
      */
     _getElement(element) {
         new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
-
         return this.elements.find((e) => {
             return e.element === element;
         });

@@ -1,5 +1,5 @@
 import ElementEvent from './element-event';
-import ObjectValidation from 'object-validation';
+import ObjectValidation from 'object-validation/dist/object-validation';
 
 /**
  * An object containing a HTMLElement and all events bound to the element

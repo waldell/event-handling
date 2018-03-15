@@ -1,4 +1,4 @@
-import ObjectValidation from 'object-validation';
+import ObjectValidation from 'object-validation/dist/object-validation';
 
 /**
  * An object holding information, relevant for a ES6 native CustomEvent object

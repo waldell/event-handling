@@ -1,5 +1,6 @@
 import ElementEvent from './element-event';
 
+import 'babel-polyfill'
 import { expect } from 'chai';
 
 describe('ElementEvent', function () {

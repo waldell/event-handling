@@ -1,6 +1,7 @@
 import Events from './events';
 import Element from './element';
 
+import 'babel-polyfill'
 import { expect } from 'chai';
 
 describe('Events', () => {
