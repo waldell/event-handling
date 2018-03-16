@@ -3,20 +3,25 @@ import Element from './element';
 
 import 'babel-polyfill'
 import { expect } from 'chai';
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 
 describe('Events', () => {
-    let li = document.createElement('li');
+    const { window } = new JSDOM(``);
+    const document = window.document;
+    const li = document.createElement('li');
 
     describe('constructor', () => {
 
         it('should initialize', () => {
-            expect(new Events().elements).to.have.length(0);
+            expect(new Events(window).elements).to.have.length(0);
         });
 
     });
 
     describe('_getElement', () => {
-        let obj = new Events();
+        let obj = new Events(window);
         obj._createElementIfNotExists(li);
 
         it('should throw error: when bad parameters', () => {
@@ -35,14 +40,14 @@ describe('Events', () => {
         });
 
         it('should return passed element-object', () => {
-            expect(obj._getElement(li)).to.deep.equal(new Element(li));
+            expect(obj._getElement(li)).to.deep.equal(new Element(li, null, window));
         });
 
     });
 
 
     describe('_createElementIfNotExists', () => {
-        let obj = new Events();
+        let obj = new Events(window);
 
         it('should throw error: when bad parameters', () => {
             expect( () => {
@@ -60,12 +65,12 @@ describe('Events', () => {
         });
 
         it('should return passed element-object', () => {
-            expect(obj._createElementIfNotExists(li)).to.deep.equal(new Element(li));
+            expect(obj._createElementIfNotExists(li)).to.deep.equal(new Element(li, null, window));
         });
 
         it('should contain added element-object', () => {
             obj._createElementIfNotExists(li);
-            expect(obj.elements).to.deep.include(new Element(li));
+            expect(obj.elements).to.deep.include(new Element(li, null, window));
         });
     });
 
@@ -74,7 +79,7 @@ describe('Events', () => {
         
 
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj._addElementEvent();
@@ -94,7 +99,7 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect(() => {
                 obj._addElementEvent(li, 'eventName', () => {});
@@ -103,7 +108,7 @@ describe('Events', () => {
         });
 
         it('should contain passed element-object with events', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             obj._addElementEvent(li, 'event1', () => {});
             obj._addElementEvent(li, 'event2', () => {});
@@ -121,7 +126,7 @@ describe('Events', () => {
         
 
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj._addElementEventFirst();
@@ -141,7 +146,7 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect(() => {
                 obj._addElementEventFirst(li, 'eventName', () => {});
@@ -153,7 +158,7 @@ describe('Events', () => {
         });
 
         it('should contain passed element-object with events in right order', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             
             let f1 = () => {};
@@ -181,7 +186,7 @@ describe('Events', () => {
     describe('_removeElementEvents', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj._removeElementEvents();
@@ -201,7 +206,7 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect(() => {
                 obj._removeElementEvents(li, 'eventName', () => {});
@@ -213,7 +218,7 @@ describe('Events', () => {
         });
 
         it('should not contain passed element-object when removed', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             let f1 = () => {};
             let f2 = () => {};
@@ -234,7 +239,7 @@ describe('Events', () => {
         });
 
         it('should not contain passed element-objects when removed', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             let f1 = () => {};
             let f2 = () => {};
@@ -253,7 +258,7 @@ describe('Events', () => {
         });
 
         it('should not contain passed element-objects with specified handler function when removed', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             let f1 = () => {};
             let f2 = () => {};
@@ -280,7 +285,7 @@ describe('Events', () => {
     describe('_createAndDispatchEvent', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj._createAndDispatchEvent();
@@ -297,7 +302,7 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect(() => {
                 obj._createAndDispatchEvent(li, 'eventName', true);
@@ -310,7 +315,7 @@ describe('Events', () => {
 
         it('should trigger event', () => {
             let sinon = require('sinon'),
-                obj = new Events(),
+                obj = new Events(window),
                 spy = sinon.spy();
                 
             li.addEventListener('hello', spy);
@@ -324,7 +329,7 @@ describe('Events', () => {
     describe('onFirst', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj.onFirst();
@@ -347,7 +352,7 @@ describe('Events', () => {
                 document.body.innerHTML = window.__html__['./events.spec.html'];
             }
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 nodeList = document.querySelectorAll('div');
 
             expect(() => {
@@ -362,7 +367,7 @@ describe('Events', () => {
         it('should call _addElementEventFirst for passed element', () => {
             let sinon = require('sinon');
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 spy = sinon.spy(obj, '_addElementEventFirst');
 
             obj.onFirst(li, 'eventName', () => {});
@@ -370,15 +375,11 @@ describe('Events', () => {
         });
 
         it('should call _addElementEventFirst for every passed element', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div'),
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div'),
                 spy = sinon.spy(obj, '_addElementEventFirst');
 
             obj.onFirst(nodeList, 'eventName', () => {});
@@ -394,7 +395,7 @@ describe('Events', () => {
     describe('on', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj.on();
@@ -411,14 +412,10 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div');
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div');
 
             expect(() => {
                 obj.on(li, 'eventName', () => {});
@@ -432,7 +429,7 @@ describe('Events', () => {
         it('should call _addElementEvent for passed element', () => {
             let sinon = require('sinon');
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 spy = sinon.spy(obj, '_addElementEvent');
 
             obj.on(li, 'eventName', () => {});
@@ -440,15 +437,11 @@ describe('Events', () => {
         });
 
         it('should call _addElementEvent for every passed element', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div'),
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div'),
                 spy = sinon.spy(obj, '_addElementEvent');
 
             obj.on(nodeList, 'eventName', () => {});
@@ -460,7 +453,7 @@ describe('Events', () => {
     describe('off', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj.off();
@@ -477,13 +470,8 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 nodeList = document.querySelectorAll('div');
 
             expect(() => {
@@ -496,9 +484,10 @@ describe('Events', () => {
         });
 
         it('should call _removeElementEvents with passed handler for passed element', () => {
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
+            let obj = new Events(dom.window),
                 spy = sinon.spy(obj, '_removeElementEvents');
 
             obj.off(li, 'eventName', () => {});
@@ -508,7 +497,7 @@ describe('Events', () => {
         it('should call _removeElementEvents for passed element', () => {
             let sinon = require('sinon');
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 spy = sinon.spy(obj, '_removeElementEvents');
             obj.on(li, 'eventName', () => { });
             obj.off(li, 'eventName');
@@ -516,15 +505,11 @@ describe('Events', () => {
         });
 
         it('should call _removeElementEvents with passed handler for every passed element', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div'),
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div'),
                 spy = sinon.spy(obj, '_removeElementEvents');
 
             obj.off(nodeList, 'eventName', () => {});
@@ -532,15 +517,11 @@ describe('Events', () => {
         });
 
         it('should call _removeElementEvents for every passed element', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div'),
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div'),
                 spy = sinon.spy(obj, '_removeElementEvents');
             obj.on(nodeList, 'eventName', () => {});
             obj.off(nodeList, 'eventName');
@@ -552,7 +533,7 @@ describe('Events', () => {
     describe('trigger', () => {
         
         it('should throw error: when bad parameters', () => {
-            let obj = new Events();
+            let obj = new Events(window);
 
             expect( () => {
                 obj.trigger();
@@ -567,14 +548,9 @@ describe('Events', () => {
         });
 
         it('should not throw error: when good parameter', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
-
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div');
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div');
 
             expect(() => {
                 obj.trigger(li, 'eventName', 'some data');
@@ -589,7 +565,7 @@ describe('Events', () => {
         it('should call _createAndDispatchEvent for passed element', () => {
             let sinon = require('sinon');
 
-            let obj = new Events(),
+            let obj = new Events(window),
                 spy = sinon.spy(obj, '_createAndDispatchEvent');
 
             obj.trigger(li, 'eventName');
@@ -597,15 +573,11 @@ describe('Events', () => {
         });
 
         it('should call _removeElementEvents for every passed element', () => {
-            // Karma creates this global __html__ property that will hold all
-            // of our HTML so we can populate the body during our tests
-            if (window.__html__) {
-                document.body.innerHTML = window.__html__['./events.spec.html'];
-            }
+            const dom = new JSDOM('<div></div><div></div><div></div><div></div><div></div>');
             let sinon = require('sinon');
 
-            let obj = new Events(),
-                nodeList = document.querySelectorAll('div'),
+            let obj = new Events(dom.window),
+                nodeList = dom.window.document.querySelectorAll('div'),
                 spy = sinon.spy(obj, '_createAndDispatchEvent');
 
             obj.trigger(nodeList, 'eventName');

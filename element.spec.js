@@ -3,10 +3,13 @@ import ElementEvent from './element-event';
 
 import 'babel-polyfill'
 import { expect } from 'chai';
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 
 describe('Element', function () {
-
+    const { window } = new JSDOM(``);
+    const document = window.document;
     let li = document.createElement('li');
 
     describe('constructor', function () {
@@ -14,42 +17,38 @@ describe('Element', function () {
         it('with bad parameters: should throw exception', function () {
             
             expect(() => {
-                new Element();
+                new Element(null, null, window);
             }).to.throw();
 
             expect(() => {
-                new Element(null, null);
+                new Element(null, null, window);
             }).to.throw();
 
             expect(() => {
-                new Element('hello');
+                new Element('hello', null, window);
             }).to.throw();
             
             expect(() => {
-                new Element('hello', 'this is a bad type');
+                new Element('hello', 'this is a bad type', window);
             }).to.throw();
 
             expect(() => {
-                new Element('hello', ['bad', 'type', 1]);
+                new Element('hello', ['bad', 'type', 1], window);
             }).to.throw();
 
             expect(() => {
-                new Element(li,
-                    new ElementEvent('a', () => {})
-                );
+                new Element(li, new ElementEvent('a', () => {}), window);
             }).to.throw();
             
         });
 
         it('with good parameters: should not throw exceptioon', () => {
             expect(() => {
-                new Element(li);
+                new Element(li, null, window);
             }).to.not.throw();
 
             expect(() => {
-                new Element(li, [
-                    new ElementEvent('a', () => {})
-                ]);
+                new Element(li, [new ElementEvent('a', () => {})], window);
             }).to.not.throw();
 
             expect(() => {
@@ -58,7 +57,7 @@ describe('Element', function () {
                     new ElementEvent('a', () => {}),
                     new ElementEvent('a', () => {}),
                     new ElementEvent('a', () => {})
-                ]);
+                ], window);
             }).to.not.throw();
 
         });
@@ -72,15 +71,15 @@ describe('Element', function () {
         it('with bad parameters: should throw exception', () => {
 
             expect(() => {
-                new Element(li).getEvents();
+                new Element(li, null, window).getEvents();
             }).to.throw();
 
             expect(() => {
-                new Element(li).getEvents(true);
+                new Element(li, null, window).getEvents(true);
             }).to.throw();
 
             expect(() => {
-                new Element(li).getEvents('good param', 'bad param');
+                new Element(li, null, window).getEvents('good param', 'bad param');
             }).to.throw();
             
         });
@@ -88,11 +87,11 @@ describe('Element', function () {
         it('with good parameters: should not throw exception', () => {
 
             expect(() => {
-                new Element(li).getEvents('good.param');
+                new Element(li, null, window).getEvents('good.param');
             }).to.not.throw();
 
             expect(() => {
-                new Element(li).getEvents('good.param', () => {});
+                new Element(li, null, window).getEvents('good.param', () => {});
             }).to.not.throw();
         });
 
@@ -118,7 +117,7 @@ describe('Element', function () {
                 new ElementEvent('fourth', () => {})
             ];
 
-            let obj = new Element(li, eventArray);
+            let obj = new Element(li, eventArray, window);
 
             expect(obj.getEvents('first')).to.deep.equal( eventArray.filter((x) => { return x.type === 'first'; }) );
             expect(obj.getEvents('second')).to.deep.equal( eventArray.filter((x) => { return x.type === 'second'; }) );
@@ -140,7 +139,7 @@ describe('Element', function () {
     describe('addEvent', () => {
         
         it('with bad parameters: should throw exception', () => {
-            let obj = new Element(li);
+            let obj = new Element(li, null, window);
 
             expect(() => {
                 obj.addEvent();
@@ -161,7 +160,7 @@ describe('Element', function () {
         });
 
         it('with good parameters: should not throw exception', () => {
-            let obj = new Element(li);
+            let obj = new Element(li, null, window);
 
             expect(() => {
                 obj.addEvent(new ElementEvent('hello', () => {}));
@@ -178,7 +177,7 @@ describe('Element', function () {
         });
 
         it('should add parameters to array', () => {
-            let obj = new Element(li);
+            let obj = new Element(li, null, window);
 
             expect(obj.events.length).to.equal(0);
 
@@ -196,7 +195,7 @@ describe('Element', function () {
     describe('removeEvents', () => {
         
         it('with bad parameters: should throw exception', () => {
-            let obj = new Element(li);
+            let obj = new Element(li, null, window);
 
             expect(() => {
                 obj.removeEvents();
@@ -230,7 +229,7 @@ describe('Element', function () {
         });
 
         it('with good parameters: should not throw exception', () => {
-            let obj = new Element(li);
+            let obj = new Element(li, null, window);
 
             expect(() => {
                 obj.removeEvents('hello');

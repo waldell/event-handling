@@ -13,7 +13,8 @@ export default class Events {
      * 
      * @memberOf Events
      */
-    constructor() {
+    constructor(_window=window) {
+        this.window = _window;
         this._elements = [];
     }
     
@@ -31,7 +32,7 @@ export default class Events {
      * @memberOf Events
      */
     _getElement(element) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         return this.elements.find((e) => {
             return e.element === element;
         });
@@ -45,12 +46,12 @@ export default class Events {
      * 
      * @memberOf Events
      */
-    _createElementIfNotExists(element) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        _createElementIfNotExists(element) {
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
 
         let elm = this._getElement(element);
         if (!elm) {
-            elm = new Element(element);
+            elm = new Element(element, null, this.window);
             this.elements.push(elm);
         }
         return elm;
@@ -66,7 +67,7 @@ export default class Events {
      * @memberOf Events
      */
     _addElementEvent(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isNotNullOrUndefined().isTypeOf(Function);
 
@@ -84,7 +85,7 @@ export default class Events {
      * @memberOf Events
      */
     _addElementEventFirst(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isNotNullOrUndefined().isTypeOf(Function);
 
@@ -115,7 +116,7 @@ export default class Events {
      * @memberOf Events
      */
     _removeElementEvents(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isTypeOf(Function);
 
@@ -135,10 +136,10 @@ export default class Events {
      * @memberOf Events
      */
     _createAndDispatchEvent(element, eventName, detail) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
 
-        let event = new CustomEvent(eventName, {
+        let event = new this.window.CustomEvent(eventName, {
             cancelable: true,
             bubbles: false,
             detail: detail
@@ -170,18 +171,18 @@ export default class Events {
     /**
      * Adds a event-handler as the first to trigger for the specified element 
      * 
-     * @param {!HTMLElement|Window|NodeList} element - The {HTMLElement} to bind the event to
+     * @param {!HTMLElement|this.window.Window|NodeList} element - The {HTMLElement} to bind the event to
      * @param {!string} eventName - The name of the event
      * @param {!function} handler - The handler-function to run when the event it dispatched
      * 
      * @memberOf Events
      */
     onFirst(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window, NodeList]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window, this.window.NodeList]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isNotNullOrUndefined().isTypeOf(Function);
 
-        if (element.constructor === NodeList) {
+        if (element.constructor === this.window.NodeList) {
             for (let e of element) {
                 this._addElementEventFirst(e, eventName, handler);
             }
@@ -200,11 +201,11 @@ export default class Events {
      * @memberOf Events
      */
     on(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window, NodeList]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window, this.window.NodeList]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isNotNullOrUndefined().isTypeOf(Function);
 
-        if (element.constructor === NodeList) {
+        if (element.constructor === this.window.NodeList) {
             for (let e of element) {
                 e.addEventListener(eventName, handler);
                 this._addElementEvent(e, eventName, handler);
@@ -225,11 +226,11 @@ export default class Events {
      * @memberOf Events
      */
     off(element, eventName, handler) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window, NodeList]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window, this.window.NodeList]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         new ObjectValidation(handler).isTypeOf(Function);
 
-        if (element.constructor === NodeList) {
+        if (element.constructor === this.window.NodeList) {
             for (let e of element) {
                 if (handler) {
                     e.removeEventListener(eventName, handler);
@@ -276,10 +277,10 @@ export default class Events {
      * @memberOf Events
      */
     trigger(element, eventName, detail) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window, NodeList]);
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window, this.window.NodeList]);
         new ObjectValidation(eventName).isNotNullOrUndefined().isTypeOf(String);
         
-        if (element.constructor === NodeList) {
+        if (element.constructor === this.window.NodeList) {
             for (let e of element) {
                 this._createAndDispatchEvent(e, eventName, detail);
             }

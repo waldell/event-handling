@@ -2,30 +2,31 @@ import ElementEvent from './element-event';
 import ObjectValidation from 'object-validation/dist/object-validation';
 
 /**
- * An object containing a HTMLElement and all events bound to the element
+ * An object containing a this.window.HTMLElement and all events bound to the element
  * 
  * @class Element
  */
 export default class Element {
     /**
      * Creates an instance of Element.
-     * @param {!HTMLElement} element 
+     * @param {!this.window.HTMLElement} element 
      * @param {ElementEvent[]} [events]
      * 
      * @memberOf Element
      */
-    constructor(element, events) {
-        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([HTMLElement, Window]);
+    constructor(element, events, _window=window) {
+        this.window = _window;
+        new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
         new ObjectValidation(events).isArrayOnlyContainingTypesOf(ElementEvent);
 
         this._element = element;
         this._events = events ? events : [];
     }
     /**
-     * The HTMLElement 
+     * The this.window.HTMLElement 
      * 
      * @readonly
-     * @returns {HTMLElement}
+     * @returns {this.window.HTMLElement}
      * 
      * @memberOf Element
      */
