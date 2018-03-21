@@ -18,7 +18,6 @@ export default class Events {
         this._elements = [];
     }
     
-    
     get elements() {
         return this._elements;
     }
@@ -46,7 +45,7 @@ export default class Events {
      * 
      * @memberOf Events
      */
-        _createElementIfNotExists(element) {
+    _createElementIfNotExists(element) {
         new ObjectValidation(element).isNotNullOrUndefined().isInstanceOf([this.window.HTMLElement, this.window.Window]);
 
         let elm = this._getElement(element);

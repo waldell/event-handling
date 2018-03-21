@@ -1,5 +1,5 @@
 import ElementEvent from './element-event';
-import ObjectValidation from 'object-validation/dist/object-validation';
+import ObjectValidation from 'object-validation';
 
 /**
  * An object containing a this.window.HTMLElement and all events bound to the element

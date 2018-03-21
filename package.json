@@ -27,7 +27,7 @@
     "jsdom": "^11.6.2",
     "mocha": "^5.0.4",
     "mocha-phantomjs": "^4.1.0",
-    "sinon": "^4.4.6"
+    "sinon": "^4.4.8"
   },
   "babel": {
     "presets": [
